@@ -3,19 +3,21 @@ from sqlalchemy.orm import relationship
 from .database import Base
 
 
-class User(Base):
-    __tablename__ = 'users'
+class Departments(Base):
+    __tablename__ = 'departments'
+
     id = Column(Integer, primary_key=True, index=True)
+    room_name = Column(String, unique=True, index=True)
+
+    employees = relationship('Employees', back_populates='departments', cascade="all, delete-orphan")
+
+
+class Employees(Base):
+    __tablename__ = 'employees'
+
+    id = Column(Integer, primary_key=True, index=True)
+    name = Column(String, index=True)
     email = Column(String, unique=True, index=True)
-    hashed_password = Column(String)
-    is_active = Column(Boolean, default=True)
-    items = relationship('Item', back_populates='owner')
+    department_id = Column(Integer, ForeignKey('departments.id'))
 
-
-class Item(Base):
-    __tablename__ = 'items'
-    id = Column(Integer, primary_key=True, index=True)
-    title = Column(String, index=True)
-    description = Column(String, index=True)
-    owner_id = Column(Integer, ForeignKey('users.id'))
-    owner = relationship('User', back_populates='items')
+    departments = relationship('Departments', back_populates='employees')

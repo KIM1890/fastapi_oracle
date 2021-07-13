@@ -1,36 +1,50 @@
 from typing import List, Optional
 from pydantic import BaseModel
+from pydantic import EmailStr
+
+'''Employees'''
 
 
-class ItemBase(BaseModel):
-    title: str
-    description: Optional[str] = None
+class EmployeeBase(BaseModel):
+    email: EmailStr
+    name: str
 
 
-class ItemCreate(ItemBase):
+class EmployeeAccount(EmployeeBase):
+    password: str
+
+
+class EmployeeCreate(EmployeeBase):
     pass
 
 
-class Item(ItemBase):
+class Employee(EmployeeBase):
     id: int
-    owner_id: int
+    department_id: int
 
     class Config:
         orm_mode = True
 
 
-class UserBase(BaseModel):
-    email: str
+class EmployeeUpdate(EmployeeBase):
+    pass
 
 
-class UserCreate(UserBase):
-    password: str
+'''Department'''
 
 
-class User(UserBase):
+class DepartmentBase(BaseModel):
+    room_name: str
+
+
+class DepartmentCreate(DepartmentBase):
+    pass
+
+
+class Department(DepartmentBase):
     id: int
-    is_active: bool
-    items: List[Item] = []
+
+    employees: List[Employee] = []
 
     class Config:
         orm_mode = True
