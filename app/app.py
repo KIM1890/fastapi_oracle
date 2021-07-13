@@ -31,12 +31,12 @@ models.Base.metadata.create_all(bind=engine)
 # tags metadata
 tags_metadata = [
     {
-        "name": "users",
-        "description": "Operations with users. The **login** logic is also here.",
+        "name": "Classes",
+        "description": "Lớp Học",
     },
     {
-        "name": "items",
-        "description": "Manage items. So _fancy_ they have their own docs.",
+        "name": "Teacher",
+        "description": "Giáo Viên",
         "externalDocs": {
             "description": "Items external docs",
             "url": "https://fastapi.tiangolo.com/",
@@ -46,7 +46,8 @@ tags_metadata = [
 # define app fastApi
 app = FastAPI(
     description='FastAPI',
-    version='2.5.0'
+    version='2.5.0',
+    openapi_tags=tags_metadata
 )
 # template to gui
 templates = Jinja2Templates(directory='templates')
@@ -63,26 +64,36 @@ def get_db():
         db.close()
 
 
-# '''GUI Template'''
+'''GUI Template'''
 
-
-@app.get('/', tags=['Template'], response_class=HTMLResponse)
-def home(request: Request):
-    data = {
-        'page': 'Home Page'
-    }
-    return templates.TemplateResponse('page.html', {'request': request, 'data': data})
-
+#
+# @app.get('/', tags=['Template'], response_class=HTMLResponse)
+# def home(request: Request):
+#     data = {
+#         'page': 'Home Page'
+#     }
+#     return templates.TemplateResponse('page.html', {'request': request, 'data': data})
+#
 
 ##########################################################################################################
 '''Class'''
 
 
+# read class multiple
+@app.get('/api/classes/', tags=['Classes'], summary='Lấy ra danh sách lớp',
+         response_model=List[schemas.Classes])
+def get_classes(skip: int = 0, limit: int = 10, db: Session = Depends(get_db),
+                auth: bool = Depends(is_authenticated)):
+    db_classes = crud.get_class_multi(db, skip, limit)
+    return db_classes
+
+
 # read class with id
-@app.get('/api/classes/{class_id}/', tags=['Class'], summary='Gets classes',
+@app.get('/api/classes/{class_id}/', tags=['Classes'], summary='Lấy ra lớp học theo mã lớp',
          response_model=schemas.Classes,
          response_description='classes id')
-def get_classes_id(class_id: int, db: Session = Depends(get_db), auth: bool = Depends(is_authenticated)):
+def get_classes_id(class_id: int, db: Session = Depends(get_db),
+                   auth: bool = Depends(is_authenticated)):
     db_classes = crud.get_class_id(db, class_id)
     return db_classes
 
@@ -92,7 +103,7 @@ def get_classes_id(class_id: int, db: Session = Depends(get_db), auth: bool = De
 '''Teacher'''
 
 
-@app.get('/api/teacher/all/', tags=['Teacher with all'], summary='Get all Teacher',
+@app.get('/api/teacher/all/', tags=['Teacher'], summary='Lấy ra tất cả các giáo viên',
          response_model=List[schemas.Teacher], response_description='Teacher all')
 def get_teacher_all(db: Session = Depends(get_db), auth: bool = Depends(is_authenticated)):
     db_teacher = crud.get_teacher_all(db)
