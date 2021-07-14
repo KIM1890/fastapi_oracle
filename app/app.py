@@ -68,14 +68,14 @@ def get_db():
 
 '''GUI Template'''
 
-#
-# @app.get('/', tags=['Template'], response_class=HTMLResponse)
-# def home(request: Request):
-#     data = {
-#         'page': 'Home Page'
-#     }
-#     return templates.TemplateResponse('page.html', {'request': request, 'data': data})
-#
+
+@app.get('/', tags=['Template'], response_class=HTMLResponse)
+def home(request: Request):
+    data = {
+        'page': 'Home Page'
+    }
+    return templates.TemplateResponse('page.html', {'request': request, 'data': data})
+
 
 ##########################################################################################################
 '''Class'''
@@ -91,7 +91,7 @@ def create_class(class_data: schemas.ClassCreate, db: Session = Depends(get_db),
 
 
 # read class all
-@app.get('/api/classes/all/', tags=['Classes'], summary='Lấy ra tất cả lớp học',
+@app.get('/api/classes/all/', tags=['Classes'], summary='Lấy ra danh sách lớp học',
          response_model=List[schemas.Classes])
 def get_classes_all(db: Session = Depends(get_db), auth: bool = Depends(is_authenticated)):
     db_classes = crud.get_class_all(db)
@@ -101,7 +101,7 @@ def get_classes_all(db: Session = Depends(get_db), auth: bool = Depends(is_authe
 
 
 # read class multiple
-@app.get('/api/classes/', tags=['Classes'], summary='Lấy ra danh sách lớp học',
+@app.get('/api/classes/', tags=['Classes'], summary='Lấy ra danh sách lớp học trong một khoảng nào đó',
          response_model=List[schemas.Classes])
 def get_classes(skip: int = 0, limit: int = 10, db: Session = Depends(get_db),
                 auth: bool = Depends(is_authenticated)):
@@ -115,9 +115,10 @@ def get_classes(skip: int = 0, limit: int = 10, db: Session = Depends(get_db),
          response_description='classes id')
 def get_classes_id(lophoc_id: int, db: Session = Depends(get_db),
                    auth: bool = Depends(is_authenticated)):
-    if lophoc_id is None:
-        raise HTTPException(status_code=404, detail='Mã lớp học không tồn tại')
     db_classes = crud.get_class_id(db, lophoc_id)
+
+    if db_classes is None:
+        raise HTTPException(status_code=404, detail='Mã lớp học không tồn tại')
     return db_classes
 
 
@@ -126,9 +127,6 @@ def get_classes_id(lophoc_id: int, db: Session = Depends(get_db),
          response_model=schemas.Classes, response_description='Cập nhật lớp học')
 def update_class_id(lophoc_id: int, class_data: schemas.ClassUpdate, db: Session = Depends(get_db),
                     auth: bool = Depends(is_authenticated)):
-    print(models.Classes.id)
-    if lophoc_id is None:
-        raise HTTPException(status_code=404, detail='Mã lớp học không tồn tại')
     db_classes = crud.update_classes(lophoc_id, class_data, db)
 
     return db_classes
@@ -139,9 +137,10 @@ def update_class_id(lophoc_id: int, class_data: schemas.ClassUpdate, db: Session
             response_model=schemas.Classes, response_description='Xoá lớp học')
 def delete_class_id(lophoc_id: int, db: Session = Depends(get_db),
                     auth: bool = Depends(is_authenticated)):
-    if lophoc_id is None:
+    db_classes = crud.delete_classes(db, lophoc_id)
+    if db_classes is None:
         raise HTTPException(status_code=404, detail='Mã lớp học không tồn tại')
-    crud.delete_classes(db, lophoc_id)
+
     return 'Delete success'
 
 

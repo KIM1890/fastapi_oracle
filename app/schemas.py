@@ -1,7 +1,6 @@
 from typing import List, Optional
 from pydantic import BaseModel
 from pydantic import EmailStr
-
 '''Teacher'''
 
 
@@ -34,10 +33,12 @@ class ClassBase(BaseModel):
 
 
 class ClassCreate(ClassBase):
+    id: int
     giaovienc: Optional[dict] = None
 
 
 class Classes(ClassBase):
+    id: int
     GIAOVIEN: List[Teacher] = []
 
     class Config:

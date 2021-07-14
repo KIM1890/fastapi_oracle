@@ -1,6 +1,7 @@
 from sqlalchemy.orm import Session
 import json
 from . import models, schemas
+from fastapi import HTTPException
 
 
 # convert list to dict
@@ -45,6 +46,8 @@ def get_class_id(db: Session, lophoc_id: int):
 # update classes
 def update_classes(lophoc_id: int, classes_data: schemas.ClassUpdate, db: Session):
     db_classes = db.query(models.Classes).filter(models.Classes.id == lophoc_id).first()
+    if db_classes is None:
+        raise HTTPException(status_code=404, detail='Mã lớp không tồn tại')
     db_classes.giaovienc = json.dumps(classes_data.giaovienc)
     db.add(db_classes)
     db.commit()
