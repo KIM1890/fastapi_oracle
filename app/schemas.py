@@ -11,7 +11,7 @@ class TeacherBase(BaseModel):
 
 
 class TeacherCreate(TeacherBase):
-    pass
+    giaovien_id: int
 
 
 class Teacher(TeacherBase):

@@ -39,10 +39,10 @@ tags_metadata = [
     {
         "name": "Teacher",
         "description": "Giáo Viên",
-        "externalDocs": {
-            "description": "Items external docs",
-            "url": "https://fastapi.tiangolo.com/",
-        },
+        # "externalDocs": {
+        #     "description": "Items external docs",
+        #     "url": "https://fastapi.tiangolo.com/",
+        # },
     },
 ]
 # define app fastApi
@@ -88,6 +88,8 @@ def get_db():
          response_model=List[schemas.Classes])
 def get_classes_all(db: Session = Depends(get_db), auth: bool = Depends(is_authenticated)):
     db_classes = crud.get_class_all(db)
+    if len(db_classes) == 0:
+        raise HTTPException(detail='Hiện không có lớp học đang mở')
     return db_classes
 
 
@@ -106,6 +108,8 @@ def get_classes(skip: int = 0, limit: int = 10, db: Session = Depends(get_db),
          response_description='classes id')
 def get_classes_id(lophoc_id: int, db: Session = Depends(get_db),
                    auth: bool = Depends(is_authenticated)):
+    if lophoc_id is None:
+        raise HTTPException(status_code=404, detail='Mã lớp học không tồn tại')
     db_classes = crud.get_class_id(db, lophoc_id)
     return db_classes
 
@@ -119,6 +123,8 @@ def get_classes_id(lophoc_id: int, db: Session = Depends(get_db),
             response_model=schemas.Classes, response_description='Xoá lớp học')
 def delete_class_id(lophoc_id: int, db: Session = Depends(get_db),
                     auth: bool = Depends(is_authenticated)):
+    if lophoc_id is None:
+        raise HTTPException(status_code=404, detail='Mã lớp học không tồn tại')
     crud.delete_classes(db, lophoc_id)
     return 'Delete success'
 
@@ -142,6 +148,8 @@ def create_teacher(teacher_data: schemas.TeacherCreate, db: Session = Depends(ge
          response_model=List[schemas.Teacher], response_description='Tất cả giáo viên')
 def get_teacher_all(db: Session = Depends(get_db), auth: bool = Depends(is_authenticated)):
     db_teacher = crud.get_teacher_all(db)
+    if len(db_teacher) == 0:
+        raise HTTPException(detail='Hiện không có giáo viên')
     return db_teacher
 
 
@@ -150,6 +158,8 @@ def get_teacher_all(db: Session = Depends(get_db), auth: bool = Depends(is_authe
          response_model=schemas.Teacher, response_description='Lấy ra giáo viên theo mã giáo viên')
 def get_teacher_id(giaovien_id: int, db: Session = Depends(get_db),
                    auth: bool = Depends(is_authenticated)):
+    if giaovien_id is None:
+        raise HTTPException(status_code=404, detail='Mã giáo viên không tồn tại')
     db_teacher = crud.get_teacher_id(db, giaovien_id)
     return db_teacher
 
@@ -160,6 +170,8 @@ def get_teacher_id(giaovien_id: int, db: Session = Depends(get_db),
 def update_teacher_id(giaovien_id: int, teacher_data: schemas.TeacherUpdate,
                       db: Session = Depends(get_db),
                       auth: bool = Depends(is_authenticated)):
+    if giaovien_id is None:
+        raise HTTPException(status_code=404, detail='Mã giáo viên không tồn tại')
     db_teacher = crud.update_teacher_id(db, teacher_data, giaovien_id)
     return db_teacher
 
@@ -168,6 +180,8 @@ def update_teacher_id(giaovien_id: int, teacher_data: schemas.TeacherUpdate,
 @app.delete('/api/teacher/{giaovien_id}/', tags=['Teacher'], summary='Xoá thông tin giáo viên',
             response_model=schemas.Teacher, response_description='Xóa giáo viên')
 def delete_teacher_id(giaovien_id: int, db: Session = Depends(get_db)):
+    if giaovien_id is None:
+        raise HTTPException(status_code=404, detail='Mã giáo viên không tồn tại')
     crud.delete_teacher_id(db, giaovien_id)
     return "Delete success"
 

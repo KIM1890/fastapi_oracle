@@ -24,7 +24,8 @@ def get_class_multi(db: Session, skip: int = 0, limit: int = 10):
 
 # read all class
 def get_class_all(db: Session):
-    return db.query(models.Classes).all()
+    db_class = db.query(models.Classes).all()
+    return db_class
 
 
 # read class with id
@@ -56,7 +57,8 @@ def delete_classes(db: Session, lophoc_id: int):
 
 # create teacher
 def create_teacher(db: Session, teacher_data: schemas.TeacherCreate):
-    teacher = models.Teacher(giaovien_name=teacher_data.giaovien_name, lophoc_id=teacher_data.lophoc_id)
+    teacher = models.Teacher(giaovien_id=teacher_data.giaovien_id, giaovien_name=teacher_data.giaovien_name,
+                             lophoc_id=teacher_data.lophoc_id)
     db.add(teacher)
     db.commit()
     db.refresh(teacher)
