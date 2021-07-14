@@ -122,7 +122,16 @@ def get_classes_id(lophoc_id: int, db: Session = Depends(get_db),
 
 
 # update class
-'''code in here'''
+@app.put('/api/classes/{lophoc_id}/', tags=['Classes'], summary='Cập nhật lớp học theo mã lớp',
+         response_model=schemas.Classes, response_description='Cập nhật lớp học')
+def update_class_id(lophoc_id: int, class_data: schemas.ClassUpdate, db: Session = Depends(get_db),
+                    auth: bool = Depends(is_authenticated)):
+    print(models.Classes.id)
+    if lophoc_id is None:
+        raise HTTPException(status_code=404, detail='Mã lớp học không tồn tại')
+    db_classes = crud.update_classes(lophoc_id, class_data, db)
+
+    return db_classes
 
 
 # delete class

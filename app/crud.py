@@ -20,7 +20,6 @@ def convert(a):
 def create_class(db: Session, class_data: schemas.ClassCreate):
     # giaovienc = [{'giaovienID': 4, 'giaovienName': 'Trinh Van Quang', 'Code': '2'}]
     classes = models.Classes(id=class_data.id, giaovienc=json.dumps(class_data.giaovienc))
-    # print(json.dumps(class_data.giaovienc))
     db.add(classes)
     db.commit()
     db.refresh(classes)
@@ -44,13 +43,13 @@ def get_class_id(db: Session, lophoc_id: int):
 
 
 # update classes
-def update_classes(db: Session, classes_data: schemas.ClassUpdate, lophoc_id: int):
-    classes = db.query(models.Classes).filter(models.Classes.id == lophoc_id).first()
-    # employee.email = employee_data.email
-    # employee.name = employee.name
+def update_classes(lophoc_id: int, classes_data: schemas.ClassUpdate, db: Session):
+    db_classes = db.query(models.Classes).filter(models.Classes.id == lophoc_id).first()
+    db_classes.giaovienc = json.dumps(classes_data.giaovienc)
+    db.add(db_classes)
     db.commit()
-    db.refresh(classes)
-    return classes
+    db.refresh(db_classes)
+    return db_classes
 
 
 # delete classes

@@ -34,12 +34,10 @@ class ClassBase(BaseModel):
 
 
 class ClassCreate(ClassBase):
-    id: int
     giaovienc: Optional[dict] = None
 
 
 class Classes(ClassBase):
-    id: str
     GIAOVIEN: List[Teacher] = []
 
     class Config:
@@ -47,4 +45,4 @@ class Classes(ClassBase):
 
 
 class ClassUpdate(ClassBase):
-    pass
+    giaovienc: Optional[dict] = None
