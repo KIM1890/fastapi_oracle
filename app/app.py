@@ -3,6 +3,8 @@ from typing import List
 
 from fastapi import Depends, FastAPI, Request, HTTPException
 from fastapi.responses import HTMLResponse
+# json
+from fastapi.encoders import jsonable_encoder
 from fastapi.security import HTTPBasic, HTTPBasicCredentials
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates

@@ -7,6 +7,7 @@ from pydantic import EmailStr
 
 class TeacherBase(BaseModel):
     giaovien_name: str
+    lophoc_id: int
 
 
 class TeacherCreate(TeacherBase):
@@ -19,6 +20,10 @@ class Teacher(TeacherBase):
 
     class Config:
         orm_mode = True
+
+
+class TeacherUpdate(TeacherBase):
+    pass
 
 
 '''Class'''
