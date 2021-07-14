@@ -86,6 +86,9 @@ def home(request: Request):
           response_model=schemas.Classes)
 def create_class(class_data: schemas.ClassCreate, db: Session = Depends(get_db),
                  auth: bool = Depends(is_authenticated)):
+    db_class_id = crud.get_class_id(db, id=class_data.id)
+    if db_class_id:
+        raise HTTPException(status_code=400, detail="Mã lớp đã tồn tại")
     db_class = crud.create_class(db, class_data)
     return db_class
 
@@ -152,7 +155,11 @@ def delete_class_id(id: int, db: Session = Depends(get_db),
           response_model=schemas.Teacher, response_description='Thêm giáo viên')
 def create_teacher(teacher_data: schemas.TeacherCreate, db: Session = Depends(get_db),
                    auth: bool = Depends(is_authenticated)):
+    db_teacher_id = crud.get_teacher_id(db, giaovien_id=teacher_data.giaovien_id)
+    if db_teacher_id:
+        raise HTTPException(status_code=400, detail="Mã giáo viên đã tồn tại")
     db_teacher = crud.create_teacher(db, teacher_data)
+
     return db_teacher
 
 
@@ -193,7 +200,8 @@ def update_teacher_id(giaovien_id: int, teacher_data: schemas.TeacherUpdate,
             response_model=schemas.Teacher, response_description='Xóa giáo viên')
 def delete_teacher_id(giaovien_id: int, db: Session = Depends(get_db)):
     crud.delete_teacher_id(db, giaovien_id)
-    return "Delete success"
+    db_teacher = crud.get_teacher_all(db)
+    return db_teacher
 
 
 '''End Teacher'''
