@@ -79,8 +79,15 @@ def get_db():
 
 ##########################################################################################################
 '''Class'''
+
+
 # create class
-'''code in here'''
+@app.post('/api/classes/', tags=['Classes'], summary='Thêm lớp học',
+          response_model=schemas.Classes)
+def create_class(class_data: schemas.ClassCreate, db: Session = Depends(get_db),
+                 auth: bool = Depends(is_authenticated)):
+    db_class = crud.create_class(db, class_data)
+    return db_class
 
 
 # read class all
@@ -90,7 +97,7 @@ def get_classes_all(db: Session = Depends(get_db), auth: bool = Depends(is_authe
     db_classes = crud.get_class_all(db)
     if len(db_classes) == 0:
         raise HTTPException(detail='Hiện không có lớp học đang mở')
-    return db_classes
+    return jsonable_encoder(db_classes)
 
 
 # read class multiple

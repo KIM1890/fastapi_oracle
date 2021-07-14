@@ -34,7 +34,8 @@ class ClassBase(BaseModel):
 
 
 class ClassCreate(ClassBase):
-    pass
+    id: int
+    giaovienc: Optional[dict] = None
 
 
 class Classes(ClassBase):

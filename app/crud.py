@@ -2,6 +2,14 @@ from sqlalchemy.orm import Session
 
 from . import models, schemas
 
+
+# convert list to dict
+def convert(a):
+    it = iter(a)
+    res_dct = dict(zip(it, it))
+    return res_dct
+
+
 ########################################################################################
 '''class'''
 
@@ -10,7 +18,8 @@ from . import models, schemas
 
 
 def create_class(db: Session, class_data: schemas.ClassCreate):
-    classes = models.Classes(id=class_data.id)
+    # giaovienc = [{'giaovienID': 4, 'giaovienName': 'Trinh Van Quang', 'Code': '2'}]
+    classes = models.Classes(id=class_data.id, giaovienc=str(class_data.giaovienc))
     db.add(classes)
     db.commit()
     db.refresh(classes)

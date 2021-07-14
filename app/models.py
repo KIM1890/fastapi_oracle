@@ -18,6 +18,6 @@ class Classes(Base):
     __tablename__ = 'LOPHOC'
 
     id = Column(Integer, primary_key=True, index=True)
-    giaovienc = Column(CLOB, index=True)
+    giaovienc = Column(CLOB)
 
     teacher = relationship('Teacher', back_populates='classes')
