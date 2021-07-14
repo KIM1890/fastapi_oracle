@@ -1,5 +1,5 @@
 from sqlalchemy.orm import Session
-
+import json
 from . import models, schemas
 
 
@@ -19,7 +19,8 @@ def convert(a):
 
 def create_class(db: Session, class_data: schemas.ClassCreate):
     # giaovienc = [{'giaovienID': 4, 'giaovienName': 'Trinh Van Quang', 'Code': '2'}]
-    classes = models.Classes(id=class_data.id, giaovienc=str(class_data.giaovienc))
+    classes = models.Classes(id=class_data.id, giaovienc=json.dumps(class_data.giaovienc))
+    # print(json.dumps(class_data.giaovienc))
     db.add(classes)
     db.commit()
     db.refresh(classes)
