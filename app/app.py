@@ -101,12 +101,12 @@ def get_classes(skip: int = 0, limit: int = 10, db: Session = Depends(get_db),
 
 
 # read class with id
-@app.get('/api/classes/{class_id}/', tags=['Classes'], summary='Lấy ra lớp học theo mã lớp',
+@app.get('/api/classes/{lophoc_id}/', tags=['Classes'], summary='Lấy ra lớp học theo mã lớp',
          response_model=schemas.Classes,
          response_description='classes id')
-def get_classes_id(class_id: int, db: Session = Depends(get_db),
+def get_classes_id(lophoc_id: int, db: Session = Depends(get_db),
                    auth: bool = Depends(is_authenticated)):
-    db_classes = crud.get_class_id(db, class_id)
+    db_classes = crud.get_class_id(db, lophoc_id)
     return db_classes
 
 
@@ -115,11 +115,11 @@ def get_classes_id(class_id: int, db: Session = Depends(get_db),
 
 
 # delete class
-@app.delete('/api/classes/{class_id}/', tags=['Classes'], summary='Xóa lớp học theo mã lớp',
+@app.delete('/api/classes/{lophoc_id}/', tags=['Classes'], summary='Xóa lớp học theo mã lớp',
             response_model=schemas.Classes, response_description='Xoá lớp học')
-def delete_class_id(class_id: int, db: Session = Depends(get_db),
+def delete_class_id(lophoc_id: int, db: Session = Depends(get_db),
                     auth: bool = Depends(is_authenticated)):
-    crud.delete_classes(db, class_id)
+    crud.delete_classes(db, lophoc_id)
     return 'Delete success'
 
 
@@ -128,11 +128,48 @@ def delete_class_id(class_id: int, db: Session = Depends(get_db),
 '''Teacher'''
 
 
+# create teacher
+@app.post('/api/teacher/', tags=['Teacher'], summary='Thêm giáo viên',
+          response_model=schemas.Teacher, response_description='Thêm giáo viên')
+def create_teacher(teacher_data: schemas.TeacherCreate, db: Session = Depends(get_db),
+                   auth: bool = Depends(is_authenticated)):
+    db_teacher = crud.create_teacher(db, teacher_data)
+    return db_teacher
+
+
+# get teacher all
 @app.get('/api/teacher/all/', tags=['Teacher'], summary='Lấy ra tất cả các giáo viên',
-         response_model=List[schemas.Teacher], response_description='Teacher all')
+         response_model=List[schemas.Teacher], response_description='Tất cả giáo viên')
 def get_teacher_all(db: Session = Depends(get_db), auth: bool = Depends(is_authenticated)):
     db_teacher = crud.get_teacher_all(db)
     return db_teacher
+
+
+# get teacher with id
+@app.get('/api/teacher/{giaovien_id}/', tags=['Teacher'], summary='Lấy ra giáo viên theo mã giáo viên',
+         response_model=schemas.Teacher, response_description='Lấy ra giáo viên theo mã giáo viên')
+def get_teacher_id(giaovien_id: int, db: Session = Depends(get_db),
+                   auth: bool = Depends(is_authenticated)):
+    db_teacher = crud.get_teacher_id(db, giaovien_id)
+    return db_teacher
+
+
+# update teacher with id
+@app.put('/api/teacher/{giaovien_id}/', tags=['Teacher'], summary='Cập nhật thông tin giáo viên',
+         response_model=schemas.Teacher, response_description='Cập nhật thông tin')
+def update_teacher_id(giaovien_id: int, teacher_data: schemas.TeacherUpdate,
+                      db: Session = Depends(get_db),
+                      auth: bool = Depends(is_authenticated)):
+    db_teacher = crud.update_teacher_id(db, teacher_data, giaovien_id)
+    return db_teacher
+
+
+# delete teacher with id
+@app.delete('/api/teacher/{giaovien_id}/', tags=['Teacher'], summary='Xoá thông tin giáo viên',
+            response_model=schemas.Teacher, response_description='Xóa giáo viên')
+def delete_teacher_id(giaovien_id: int, db: Session = Depends(get_db)):
+    crud.delete_teacher_id(db, giaovien_id)
+    return "Delete success"
 
 
 '''End Teacher'''
