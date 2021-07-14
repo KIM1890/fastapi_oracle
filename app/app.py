@@ -110,12 +110,12 @@ def get_classes(skip: int = 0, limit: int = 10, db: Session = Depends(get_db),
 
 
 # read class with id
-@app.get('/api/classes/{lophoc_id}/', tags=['Classes'], summary='Lấy ra lớp học theo mã lớp',
+@app.get('/api/classes/{id}/', tags=['Classes'], summary='Lấy ra lớp học theo mã lớp',
          response_model=schemas.Classes,
          response_description='classes id')
-def get_classes_id(lophoc_id: int, db: Session = Depends(get_db),
+def get_classes_id(id: int, db: Session = Depends(get_db),
                    auth: bool = Depends(is_authenticated)):
-    db_classes = crud.get_class_id(db, lophoc_id)
+    db_classes = crud.get_class_id(db, id)
 
     if db_classes is None:
         raise HTTPException(status_code=404, detail='Mã lớp học không tồn tại')
@@ -123,25 +123,23 @@ def get_classes_id(lophoc_id: int, db: Session = Depends(get_db),
 
 
 # update class
-@app.put('/api/classes/{lophoc_id}/', tags=['Classes'], summary='Cập nhật lớp học theo mã lớp',
+@app.put('/api/classes/{id}/', tags=['Classes'], summary='Cập nhật lớp học theo mã lớp',
          response_model=schemas.Classes, response_description='Cập nhật lớp học')
-def update_class_id(lophoc_id: int, class_data: schemas.ClassUpdate, db: Session = Depends(get_db),
+def update_class_id(id: int, class_data: schemas.ClassUpdate, db: Session = Depends(get_db),
                     auth: bool = Depends(is_authenticated)):
-    db_classes = crud.update_classes(lophoc_id, class_data, db)
+    db_classes = crud.update_classes(id, class_data, db)
 
     return db_classes
 
 
 # delete class
-@app.delete('/api/classes/{lophoc_id}/', tags=['Classes'], summary='Xóa lớp học theo mã lớp',
+@app.delete('/api/classes/{id}/', tags=['Classes'], summary='Xóa lớp học theo mã lớp',
             response_model=schemas.Classes, response_description='Xoá lớp học')
-def delete_class_id(lophoc_id: int, db: Session = Depends(get_db),
+def delete_class_id(id: int, db: Session = Depends(get_db),
                     auth: bool = Depends(is_authenticated)):
-    db_classes = crud.delete_classes(db, lophoc_id)
-    if db_classes is None:
-        raise HTTPException(status_code=404, detail='Mã lớp học không tồn tại')
-
-    return 'Delete success'
+    crud.delete_classes(db, id)
+    db_classes = crud.get_class_all(db)
+    return db_classes
 
 
 '''End Class'''
@@ -173,9 +171,10 @@ def get_teacher_all(db: Session = Depends(get_db), auth: bool = Depends(is_authe
          response_model=schemas.Teacher, response_description='Lấy ra giáo viên theo mã giáo viên')
 def get_teacher_id(giaovien_id: int, db: Session = Depends(get_db),
                    auth: bool = Depends(is_authenticated)):
-    if giaovien_id is None:
-        raise HTTPException(status_code=404, detail='Mã giáo viên không tồn tại')
     db_teacher = crud.get_teacher_id(db, giaovien_id)
+
+    if db_teacher is None:
+        raise HTTPException(status_code=404, detail='Mã giáo viên không tồn tại')
     return db_teacher
 
 
@@ -185,8 +184,6 @@ def get_teacher_id(giaovien_id: int, db: Session = Depends(get_db),
 def update_teacher_id(giaovien_id: int, teacher_data: schemas.TeacherUpdate,
                       db: Session = Depends(get_db),
                       auth: bool = Depends(is_authenticated)):
-    if giaovien_id is None:
-        raise HTTPException(status_code=404, detail='Mã giáo viên không tồn tại')
     db_teacher = crud.update_teacher_id(db, teacher_data, giaovien_id)
     return db_teacher
 
@@ -195,8 +192,6 @@ def update_teacher_id(giaovien_id: int, teacher_data: schemas.TeacherUpdate,
 @app.delete('/api/teacher/{giaovien_id}/', tags=['Teacher'], summary='Xoá thông tin giáo viên',
             response_model=schemas.Teacher, response_description='Xóa giáo viên')
 def delete_teacher_id(giaovien_id: int, db: Session = Depends(get_db)):
-    if giaovien_id is None:
-        raise HTTPException(status_code=404, detail='Mã giáo viên không tồn tại')
     crud.delete_teacher_id(db, giaovien_id)
     return "Delete success"
 

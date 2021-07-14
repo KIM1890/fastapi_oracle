@@ -39,13 +39,13 @@ def get_class_all(db: Session):
 
 
 # read class with id
-def get_class_id(db: Session, lophoc_id: int):
+def get_class_id(db: Session, id: int):
     return db.query(models.Classes).filter(models.Classes.id == lophoc_id).first()
 
 
 # update classes
-def update_classes(lophoc_id: int, classes_data: schemas.ClassUpdate, db: Session):
-    db_classes = db.query(models.Classes).filter(models.Classes.id == lophoc_id).first()
+def update_classes(id: int, classes_data: schemas.ClassUpdate, db: Session):
+    db_classes = db.query(models.Classes).filter(models.Classes.id == id).first()
     if db_classes is None:
         raise HTTPException(status_code=404, detail='Mã lớp không tồn tại')
     db_classes.giaovienc = json.dumps(classes_data.giaovienc)
@@ -56,8 +56,10 @@ def update_classes(lophoc_id: int, classes_data: schemas.ClassUpdate, db: Sessio
 
 
 # delete classes
-def delete_classes(db: Session, lophoc_id: int):
-    db_classes = db.query(models.Classes).filter(models.Classes.id == lophoc_id).first()
+def delete_classes(db: Session, id: int):
+    db_classes = db.query(models.Classes).filter(models.Classes.id == id).first()
+    if db_classes is None:
+        raise HTTPException(status_code=404, detail='Mã lớp không tồn tại')
     db.delete(db_classes)
     db.commit()
 
@@ -90,6 +92,8 @@ def get_teacher_id(db: Session, giaovien_id: int):
 # update teacher with id
 def update_teacher_id(db: Session, teacher_data: schemas.TeacherUpdate, giaovien_id: int):
     db_teacher = db.query(models.Teacher).filter(models.Teacher.giaovien_id == giaovien_id).first()
+    if db_teacher is None:
+        raise HTTPException(status_code=404, detail='Mã giáo viên không tồn tại')
     db_teacher.giaovien_name = teacher_data.giaovien_name
     db_teacher.lophoc_id = teacher_data.lophoc_id
     db.commit()
@@ -100,6 +104,8 @@ def update_teacher_id(db: Session, teacher_data: schemas.TeacherUpdate, giaovien
 # delete teacher with id
 def delete_teacher_id(db: Session, giaovien_id: int):
     db_teacher = db.query(models.Teacher).filter(models.Teacher.giaovien_id == giaovien_id).first()
+    if db_teacher is None:
+        raise HTTPException(status_code=404, detail='Mã giáo viên không tồn tại')
     db.delete(db_teacher)
     db.commit()
 
