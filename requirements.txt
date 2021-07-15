@@ -1,0 +1,13 @@
+aiofiles==0.7.0
+cx-Oracle==8.2.1
+fastapi==0.66.0
+greenlet==1.1.0
+Jinja2==3.0.1
+MarkupSafe==2.0.1
+pydantic==1.8.2
+six==1.16.0
+SQLAlchemy==1.4.21
+SQLAlchemy-Utils==0.37.8
+starlette==0.14.2
+typing-extensions==3.10.0.0
+
