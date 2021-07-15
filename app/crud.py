@@ -40,7 +40,7 @@ def get_class_all(db: Session):
 
 # read class with id
 def get_class_id(db: Session, id: int):
-    return db.query(models.Classes).filter(models.Classes.id == lophoc_id).first()
+    return db.query(models.Classes).filter(models.Classes.id == id).first()
 
 
 # update classes
